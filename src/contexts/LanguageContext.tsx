@@ -1,21 +1,6 @@
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import translations from '@/translations';
-
-// Debug mode - set to true to see detailed logs
-const DEBUG = true;
-
-const debugLog = (message: string, data?: any) => {
-  if (DEBUG) {
-    console.log(`[LanguageContext] ${message}`, data || '');
-  }
-};
-
-const debugError = (message: string, error?: any) => {
-  if (DEBUG) {
-    console.error(`[LanguageContext] ERROR: ${message}`, error || '');
-  }
-};
 
 type Language = 'en' | 'es';
 
@@ -28,197 +13,95 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Use a ref to track if this is the initial render
-  const isInitialRender = React.useRef(true);
   const [lang, setLang] = useState<Language>('en');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Force a re-render when the language changes
-  const [_, forceUpdate] = React.useState({});
 
-  // Initialize language from URL
+  // Initialize language from localStorage or URL
   useEffect(() => {
     try {
+      // Get language from URL first
       const path = location.pathname;
-      debugLog('Initializing language from path', { path });
+      const urlLang = path.startsWith('/spanish') ? 'es' : 'en';
       
-      const newLang = path === '/spanish' ? 'es' : 'en';
+      // Then check localStorage
+      const savedLang = localStorage.getItem('preferredLanguage') as Language | null;
       
-      // Only update if the language is actually changing
-      if (newLang !== lang) {
-        debugLog(`Setting language to ${newLang === 'es' ? 'Spanish' : 'English'}`);
-        setLang(newLang);
-        
-        // Force a re-render of components that use the language
-        forceUpdate({});
-      }
+      // Use saved language if available, otherwise use URL-based language
+      const newLang = savedLang || urlLang;
       
-      setError(null);
-    } catch (err) {
-      const errorMessage = 'Failed to initialize language';
-      debugError(errorMessage, err);
-      setError(errorMessage);
-    }
-  }, [location, lang]);
-
-  const setLanguage = React.useCallback((newLang: Language) => {
-    try {
-      debugLog('Changing language to', newLang);
-      setIsLoading(true);
-      setError(null);
-      
-      // Only update if the language is actually changing
+      // Update state if needed
       if (newLang !== lang) {
         setLang(newLang);
-        
-        // Force a re-render of components that use the language
-        forceUpdate({});
       }
       
-      // Update URL and navigate without page reload
-      const newPath = newLang === 'es' ? '/spanish' : '/';
-      const newUrl = newPath + location.search + location.hash;
-      debugLog('Navigating to', newUrl);
-      
-      navigate(newUrl, { replace: true });
-      
-      // Log the language change for debugging
-      debugLog('Language changed successfully', { 
-        previousLang: lang, 
-        newLang,
-        url: window.location.href
-      });
-    } catch (err) {
-      const errorMessage = `Failed to change language to ${newLang}`;
-      debugError(errorMessage, err);
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [lang, location.search, location.hash, navigate]);
-
-  // Translation function that handles dot notation keys in the translations object
-  const t = (key: string): string => {
-    try {
-      if (!key) {
-        debugError('Translation key is empty');
-        return '';
-      }
-
-      debugLog(`Looking up translation for key: ${key} in language: ${lang}`);
-      
-      // Check if language exists
-      if (!translations[lang]) {
-        debugError(`No translations found for language: ${lang}`);
-        return `[${key}]`;
-      }
-
-      // Direct access to translations
-      const translation = translations[lang];
-      
-      // Check if the key exists directly (for backward compatibility)
-      if (key in translation) {
-        const value = translation[key];
-        debugLog(`Found direct translation for '${key}':`, value);
-        return value as string;
+      // Ensure URL matches the selected language
+      if (newLang === 'es' && !path.startsWith('/spanish')) {
+        navigate(`/spanish${path}`, { replace: true });
+      } else if (newLang === 'en' && path.startsWith('/spanish')) {
+        navigate(path.replace(/^\/spanish/, '') || '/', { replace: true });
       }
       
-      // Try to find a matching key (case insensitive)
-      const lowerKey = key.toLowerCase();
-      const matchingKey = Object.keys(translation).find(k => k.toLowerCase() === lowerKey);
-      
-      if (matchingKey) {
-        const value = translation[matchingKey];
-        debugLog(`Found matching key for '${key}':`, { matchingKey, value });
-        return value as string;
-      }
-      
-      // Try to find a key that ends with the requested key (for nested keys)
-      const nestedMatchingKey = Object.keys(translation).find(
-        k => k.toLowerCase().endsWith(`.${lowerKey}`) || k.toLowerCase() === lowerKey
-      );
-      
-      if (nestedMatchingKey) {
-        const value = translation[nestedMatchingKey];
-        debugLog(`Found nested matching key for '${key}':`, { nestedMatchingKey, value });
-        return value as string;
-      }
-      
-      // Try fallback language
-      const fallbackLang = lang === 'en' ? 'es' : 'en';
-      debugLog(`Key '${key}' not found in ${lang}, trying fallback language: ${fallbackLang}`);
-      
-      if (translations[fallbackLang]) {
-        // Try direct match first
-        if (key in translations[fallbackLang]) {
-          const fallbackValue = translations[fallbackLang][key];
-          debugLog(`Found fallback for '${key}' in ${fallbackLang}:`, fallbackValue);
-          return fallbackValue as string;
-        }
-        
-        // Try to find a matching key in fallback language
-        const fallbackMatchingKey = Object.keys(translations[fallbackLang]).find(
-          k => k.toLowerCase() === lowerKey || k.toLowerCase().endsWith(`.${lowerKey}`)
-        );
-        
-        if (fallbackMatchingKey) {
-          const fallbackValue = translations[fallbackLang][fallbackMatchingKey];
-          debugLog(`Found matching fallback for '${key}' in ${fallbackLang}:`, { 
-            fallbackMatchingKey, 
-            fallbackValue 
-          });
-          return fallbackValue as string;
-        }
-      }
-      
-      debugError(`Translation key '${key}' not found in any language`);
-      return `[${key}]`;
+      // Save to localStorage
+      localStorage.setItem('preferredLanguage', newLang);
       
     } catch (error) {
-      debugError(`Error accessing translation key '${key}'`, error);
+      console.error('Error initializing language:', error);
+    }
+  }, [location.pathname, navigate]);
+
+  // Handle language changes
+  const setLanguage = useCallback((newLang: Language) => {
+    try {
+      if (newLang !== lang) {
+        // Update state
+        setLang(newLang);
+        
+        // Save to localStorage
+        localStorage.setItem('preferredLanguage', newLang);
+        
+        // Update URL
+        const currentPath = location.pathname;
+        if (newLang === 'es') {
+          if (!currentPath.startsWith('/spanish')) {
+            const newPath = currentPath === '/' ? '/spanish' : `/spanish${currentPath}`;
+            navigate(newPath, { replace: true });
+          }
+        } else {
+          if (currentPath.startsWith('/spanish')) {
+            const newPath = currentPath.replace(/^\/spanish/, '') || '/';
+            navigate(newPath, { replace: true });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error changing language:', error);
+    }
+  }, [lang, location.pathname, navigate]);
+
+  // Translation function
+  const t = useCallback((key: string): string => {
+    try {
+      if (!key) return '';
+      
+      // Try current language first
+      if (translations[lang] && key in translations[lang]) {
+        return translations[lang][key];
+      }
+      
+      // Try fallback language (en)
+      if (lang !== 'en' && translations['en'] && key in translations['en']) {
+        return translations['en'][key];
+      }
+      
+      return `[${key}]`;
+    } catch (error) {
+      console.error(`Error translating key '${key}':`, error);
       return `[${key}]`;
     }
-  };
+  }, [lang]);
 
-  // Log the current language state when it changes
-  useEffect(() => {
-    // Log available translations on initial load
-    if (DEBUG) {
-      console.group('Available Translations:');
-      console.log('Current language:', lang);
-      console.log('Available languages:', Object.keys(translations));
-      
-      // Log all English keys and values
-      console.group('English Translations:');
-      Object.entries(translations['en'] || {}).forEach(([key, value]) => {
-        console.log(`${key}:`, value);
-      });
-      console.groupEnd();
-      
-      // Log all Spanish keys and values
-      console.group('Spanish Translations:');
-      Object.entries(translations['es'] || {}).forEach(([key, value]) => {
-        console.log(`${key}:`, value);
-      });
-      console.groupEnd();
-      
-      console.groupEnd();
-    }
-
-    debugLog('Language state updated', { 
-      currentLanguage: lang,
-      isLoading,
-      error,
-      currentPath: window.location.pathname,
-      availableLanguages: Object.keys(translations),
-      sampleTranslation: translations[lang]?.['header.title'] || 'No translation found'
-    });
-  }, [lang, isLoading, error]);
-
-  // Memoize the context value to prevent unnecessary re-renders
+  // Create context value
   const contextValue = React.useMemo(() => ({
     lang,
     setLanguage,

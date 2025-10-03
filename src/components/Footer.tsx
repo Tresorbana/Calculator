@@ -1,8 +1,15 @@
-import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Globe, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const Footer = () => {
-  const { t } = useLanguage();
+  const { t, lang, setLanguage } = useLanguage();
 
   return (
     <footer className="relative glass-card border-t border-border/20 py-16 px-4">
@@ -31,6 +38,23 @@ export const Footer = () => {
               <a href="#" className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center hover:shadow-glow transition-all duration-300">
                 <Facebook className="w-5 h-5 text-white" />
               </a>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="w-10 h-10 bg-gradient-primary hover:bg-primary/90 text-white border-0">
+                    <Globe className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setLanguage('en')}>
+                    English
+                    {lang === 'en' && <Check className="ml-2 h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLanguage('es')}>
+                    Español
+                    {lang === 'es' && <Check className="ml-2 h-4 w-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -51,12 +75,11 @@ export const Footer = () => {
           <div className="space-y-6">
             <h3 className="text-lg font-semibold gradient-text">{t('footer.company') || 'Company'}</h3>
             <ul className="space-y-3 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.about_us') || 'About Us'}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.our_team') || 'Our Team'}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.case_studies') || 'Case Studies'}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.careers') || 'Careers'}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.news') || 'News'}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t('footer.contact_link') || 'Contact'}</a></li>
+              <li><a href="/about" className="hover:text-primary transition-colors">{t('footer.about_us') || 'About Us'}</a></li>
+              <li><a href="/terms" className="hover:text-primary transition-colors">{t('footer.terms_of_use') || 'Terms of Use'}</a></li>
+              <li><a href="/cookies" className="hover:text-primary transition-colors">{t('footer.cookies_policy') || 'Cookies Policy'}</a></li>
+              <li><a href="/privacy" className="hover:text-primary transition-colors">{t('footer.privacy_policy') || 'Privacy Policy'}</a></li>
+              <li><a href="/disclaimer" className="hover:text-primary transition-colors">{t('footer.disclaimer') || 'Disclaimer'}</a></li>
             </ul>
           </div>
 
@@ -99,8 +122,10 @@ export const Footer = () => {
         <div className="mt-16 pt-8 border-t border-border/20 text-center">
           <p className="text-muted-foreground">
             © 2024 La Formula Capital Group. {t('footer.all_rights_reserved') || 'All rights reserved.'} | 
-            <a href="#" className="ml-1 hover:text-primary transition-colors">{t('footer.privacy_policy') || 'Privacy Policy'}</a> | 
-            <a href="#" className="ml-1 hover:text-primary transition-colors">{t('footer.terms_of_service') || 'Terms of Service'}</a>
+            <a href="/privacy" className="ml-1 hover:text-primary transition-colors">{t('footer.privacy_policy') || 'Privacy Policy'}</a> | 
+            <a href="/terms" className="ml-1 hover:text-primary transition-colors">{t('footer.terms_of_use') || 'Terms of Use'}</a> |
+            <a href="/cookies" className="ml-1 hover:text-primary transition-colors">{t('footer.cookies_policy') || 'Cookies Policy'}</a> |
+            <a href="/disclaimer" className="ml-1 hover:text-primary transition-colors">{t('footer.disclaimer') || 'Disclaimer'}</a>
           </p>
         </div>
       </div>

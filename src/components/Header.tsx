@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,35 +13,44 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export const Header = () => {
   const { lang, setLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Helper function to get the current path with the correct language prefix
+  const getLocalizedPath = (path: string) => {
+    if (path.startsWith('/spanish')) {
+      return path;
+    }
+    return lang === 'es' ? `/spanish${path === '/' ? '' : path}` : path;
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/20 h-24">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to={getLocalizedPath('/')} className="flex items-center space-x-3">
             <img
               src="https://www.laformulacg.net/_next/image?url=%2Fimages%2Flogo%2Flogo.png&w=128&q=75"
               alt="La Formula Capital Group"
               className="h-20 w-auto"
               id="logo"
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#services"
+            <Link
+              to={getLocalizedPath('/#services')}
               className="text-foreground hover:text-primary transition-colors"
             >
-              {t("header.services")}  {/* This matches the key in translations.ts */}
-            </a>
-            <a
-              href="#about"
+              {t("header.services")}
+            </Link>
+            <Link
+              to={getLocalizedPath('/about')}
               className="text-foreground hover:text-primary transition-colors"
             >
-              {t("header.about")}  {/* This matches the key in translations.ts */}
-            </a>
+              {t("header.about")}
+            </Link>
 
             {/* Language Dropdown */}
             <DropdownMenu>
@@ -86,18 +95,20 @@ export const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <nav className="md:hidden mt-4 space-y-4 border-t border-border/20 pt-4">
-            <a
-              href="#services"
+            <Link
+              to={getLocalizedPath('/#services')}
               className="block text-foreground hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("header.services")}
-            </a>
-            <a
-              href="#about"
+            </Link>
+            <Link
+              to={getLocalizedPath('/about')}
               className="block text-foreground hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
             >
               {t("header.about")}
-            </a>
+            </Link>
 
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">Languages:</p>
