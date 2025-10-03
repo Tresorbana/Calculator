@@ -7,7 +7,6 @@ import { LanguageProvider, useLanguage } from "./contexts/LanguageContext";
 import { HomePage } from "./components/HomePage";
 import NotFound from "./pages/NotFound";
 import CanvasBackground from "./components/CanvasBackground";
-import CustomCursor from "./components/CustomCursor";
 import { useEffect } from "react";
 
 // Wrapper component to handle language initialization
@@ -70,7 +69,6 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <CustomCursor/>
       <CanvasBackground/>
       <Toaster />
       <Sonner />

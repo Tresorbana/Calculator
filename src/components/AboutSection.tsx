@@ -223,31 +223,38 @@ export const AboutSection = () => {
             </motion.button>
           </motion.div>
           
-          {/* Visual Element */}
+          {/* Statistics Card */}
           <motion.div 
-            className="relative"
-            initial={{ opacity: 0, x: 50 }}
+            className="relative z-10 mt-16 lg:mt-0"
+            initial={{ opacity: 0, y: 50 }}
             animate={{ 
               opacity: 1, 
-              x: 0
-            }}
-            transition={{
-              delay: 0.3,
-              type: 'spring',
-              stiffness: 100
+              y: 0,
+              transition: { delay: 0.3 }
             }}
           >
-            <div className="relative z-10 glass-card p-8 rounded-3xl ml-36">
+            <div className="glass-card p-8 rounded-3xl">
               <div className="space-y-6">
-                {stats.map((stat, index) => (
-                  <div key={index}>
-                    {index > 0 && <div className="h-px bg-gradient-primary w-full my-4" />}
-                    <div className="text-center">
-                      <div className="text-4xl font-bold gradient-text mb-2">{stat.value}</div>
-                      <div className="text-muted-foreground">{stat.label}</div>
-                    </div>
+                <div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold gradient-text mb-2">10+</div>
+                    <div className="text-muted-foreground">15+ Años de Experiencia</div>
                   </div>
-                ))}
+                </div>
+                <div className="h-px bg-gradient-primary w-full my-4"></div>
+                <div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold gradient-text mb-2">500+</div>
+                    <div className="text-muted-foreground">500+ Proyectos Exitosos</div>
+                  </div>
+                </div>
+                <div className="h-px bg-gradient-primary w-full my-4"></div>
+                <div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold gradient-text mb-2">98%</div>
+                    <div className="text-muted-foreground">98% Satisfacción del Cliente</div>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
