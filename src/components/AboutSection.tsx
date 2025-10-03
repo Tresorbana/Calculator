@@ -2,6 +2,7 @@ import { CheckCircle, Target, Users, Award, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import networkBg from '@/assets/network-bg.png';
 import networkGlobe from '@/assets/network-globe.png';
 
@@ -15,7 +16,7 @@ const fadeInUp = {
 };
 
 export const AboutSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
@@ -202,25 +203,27 @@ export const AboutSection = () => {
               })}
             </motion.div>
 
-            <motion.button 
-              className="btn-hero group"
-              variants={fadeInUp}
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.4)'
-              }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {t('footer.get_started') || 'Get Started Today'}
+            <Link to={lang === 'es' ? '/spanish/contact' : '/contact'}>
               <motion.div 
-                className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-                initial={{ x: 0 }}
-                animate={{ x: 5 }}
-                transition={{ duration: 0.3 }}
+                className="btn-hero group inline-flex items-center"
+                variants={fadeInUp}
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.4)'
+                }}
+                whileTap={{ scale: 0.98 }}
               >
-                <ArrowRight />
+                {t('footer.get_started') || 'Get Started Today'}
+                <motion.div 
+                  className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  initial={{ x: 0 }}
+                  animate={{ x: 5 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ArrowRight />
+                </motion.div>
               </motion.div>
-            </motion.button>
+            </Link>
           </motion.div>
           
           {/* Statistics Card */}

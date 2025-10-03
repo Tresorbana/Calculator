@@ -31,6 +31,11 @@ const queryClient = new QueryClient();
 
 // Import the new pages
 import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import CareersPage from './pages/CareersPage';
+import ProcessOptimization from './pages/services/ProcessOptimization';
+import BusinessConsulting from './pages/services/BusinessConsulting';
+import TechnologySolutions from './pages/services/TechnologySolutions';
 import TermsOfUse from './pages/policies/TermsOfUse';
 import PrivacyPolicy from './pages/policies/PrivacyPolicy';
 import CookiesPolicy from './pages/policies/CookiesPolicy';
@@ -44,6 +49,11 @@ const AppContent = () => {
       {/* English Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/careers" element={<CareersPage />} />
+      <Route path="/services/process-optimization" element={<ProcessOptimization />} />
+      <Route path="/services/business-consulting" element={<BusinessConsulting />} />
+      <Route path="/services/technology-solutions" element={<TechnologySolutions />} />
       <Route path="/terms" element={<TermsOfUse />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/cookies" element={<CookiesPolicy />} />
@@ -52,6 +62,11 @@ const AppContent = () => {
       {/* Spanish Routes */}
       <Route path="/spanish" element={<HomePage />} />
       <Route path="/spanish/about" element={<AboutPage />} />
+      <Route path="/spanish/contact" element={<ContactPage />} />
+      <Route path="/spanish/careers" element={<CareersPage />} />
+      <Route path="/spanish/services/process-optimization" element={<ProcessOptimization />} />
+      <Route path="/spanish/services/business-consulting" element={<BusinessConsulting />} />
+      <Route path="/spanish/services/technology-solutions" element={<TechnologySolutions />} />
       <Route path="/spanish/terms" element={<TermsOfUse />} />
       <Route path="/spanish/privacy" element={<PrivacyPolicy />} />
       <Route path="/spanish/cookies" element={<CookiesPolicy />} />

@@ -1,9 +1,10 @@
 import { NetworkBackground } from './NetworkBackground';
 import networkGlobe from '@/assets/network-globe.png';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Link } from 'react-router-dom';
 
 export const HeroSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -42,12 +43,15 @@ export const HeroSection = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
-          <button className="btn-hero">
+          <a href="#services" className="btn-hero">
             {t('homepage.discover_services')}
-          </button>
-          <button className="px-8 py-4 font-semibold text-foreground border border-border/40 rounded-xl hover:bg-card/20 transition-all duration-300 hover:border-primary/50">
+          </a>
+          <Link 
+            to={lang === 'es' ? '/spanish/about' : '/about'}
+            className="px-8 py-4 font-semibold text-foreground border border-border/40 rounded-xl hover:bg-card/20 transition-all duration-300 hover:border-primary/50"
+          >
             {t('homepage.learn_more')}
-          </button>
+          </Link>
         </div>
         </div>
 

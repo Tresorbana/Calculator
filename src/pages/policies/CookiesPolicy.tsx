@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
 export default function CookiesPolicy() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4">
       <Link 
-        to="/" 
+        to={lang === 'es' ? '/spanish' : '/'} 
         className="inline-flex items-center text-primary hover:text-primary/80 mb-6 transition-colors"
       >
         <ChevronLeft className="w-5 h-5 mr-1" />
@@ -40,10 +40,10 @@ export default function CookiesPolicy() {
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">
-            {t('cookies.how_we_use_cookies_title')}
+            {t('cookies.how_we_use_title')}
           </h2>
           <p className="mb-4">
-            {t('cookies.how_we_use_cookies_content')}
+            {t('cookies.how_we_use_content')}
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-2">
             <li>{t('cookies.purpose_necessary')}</li>
@@ -67,21 +67,23 @@ export default function CookiesPolicy() {
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">
-            {t('cookies.third_party_cookies_title')}
+            {t('cookies.third_party_title')}
           </h2>
           <p className="mb-4">
-            {t('cookies.third_party_cookies_content')}
+            {t('cookies.third_party_content')}
           </p>
         </section>
 
         <section>
           <h2 className="text-2xl font-semibold mb-4">
-            {t('cookies.contact_us_title')}
+            {t('cookies.contact_title')}
           </h2>
           <p>
-            {t('cookies.contact_us_content')}
+            {t('cookies.contact_content')}
           </p>
           <p className="mt-2">
+            {t('cookies.contact_email')}<br />
+            {t('cookies.contact_location')}
           </p>
         </section>
       </div>

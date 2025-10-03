@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
 export default function AboutPage() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   return (
     <div className="container mx-auto max-w-4xl py-12 px-4">
       <Link 
-        to="/" 
+        to={lang === 'es' ? '/spanish' : '/'} 
         className="inline-flex items-center text-primary hover:text-primary/80 mb-6 transition-colors"
       >
         <ChevronLeft className="w-5 h-5 mr-1" />
